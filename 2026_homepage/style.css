@@ -96,13 +96,6 @@ body {
     align-items: center;
 }
 
-.search-input {
-    padding: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    margin-right: 1rem;
-}
-
 .login-btn {
     background-color: #0056b3;
     color: white;
@@ -169,6 +162,49 @@ body {
     background-color: #004080;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+/* Contact Form */
+.contact-form {
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 합니다. */
+}
+
+.btn-submit {
+    display: inline-block;
+    background-color: #0056b3;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #004080;
 }
 
 /* Footer */
