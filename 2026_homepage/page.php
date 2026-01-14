@@ -1,5 +1,7 @@
 <?php
-$page_id = 'home'; // 기본 페이지
+include_once('./_common.php');
+
+$page_id = 'home'; // 기본 페이지, 사용자가 id를 제공하지 않을 경우
 if (isset($_GET['id'])) {
     // 보안: 디렉토리 탐색 공격 방지
     $req_id = preg_replace('/[^a-zA-Z0-9-]/', '', $_GET['id']);
@@ -42,6 +44,7 @@ if (file_exists($page_file)) {
 
     <footer class="footer"><p>&copy; 2026 ABNI. All Rights Reserved.</p></footer>
 
+    <script>const IS_ADMIN = <?php echo $is_admin ? 'true' : 'false'; ?>;</script>
     <script src="header.js"></script>
 </body>
 </html>

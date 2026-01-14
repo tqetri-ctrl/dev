@@ -4,8 +4,7 @@ session_start();
 // 중요: 이 비밀번호를 실제 운영 전에 반드시 변경하세요!
 $ADMIN_PASSWORD = 'admin123';
 
-$nav_file = __DIR__ . '/data/navigation.json';
-$pages_dir = __DIR__ . '/data/pages';
+$nav_file = __DIR__ . '//data/pages';
 
 // 로그아웃 처리
 if (isset($_GET['logout'])) {
