@@ -1,0 +1,68 @@
+[
+    {
+        "title": "About ABNI",
+        "url": "page.php?id=about"
+    },
+    {
+        "title": "Services",
+        "url": "page.php?id=services",
+        "submenu": [
+            {
+                "title": "시스템/SW/AI Process Consulting",
+                "url": "page.php?id=services-process"
+            },
+            {
+                "title": "고신뢰성 AI/Data 컨설팅",
+                "url": "page.php?id=services-ai-data"
+            },
+            {
+                "title": "Data 품질",
+                "url": "page.php?id=services-data-quality"
+            },
+            {
+                "title": "AI 신뢰성",
+                "url": "page.php?id=services-ai-reliability"
+            }
+        ]
+    },
+    {
+        "title": "Case Studies",
+        "url": "page.php?id=case-studies",
+        "submenu": [
+            {
+                "title": "프로세스 개선 성공 사례",
+                "url": "page.php?id=casestudies-process"
+            },
+            {
+                "title": "AI 컨설팅 지원 사례",
+                "url": "page.php?id=casestudies-ai"
+            },
+            {
+                "title": "Data 분석/적용 사례",
+                "url": "page.php?id=casestudies-data"
+            }
+        ]
+    },
+    {
+        "title": "Insights",
+        "url": "page.php?id=insights",
+        "submenu": [
+            {
+                "title": "Articles",
+                "url": "page.php?id=insights-articles"
+            },
+            {
+                "title": "Reports / Whitepapers",
+                "url": "page.php?id=insights-reports"
+            }
+        ]
+    },
+    {
+        "title": "Team",
+        "url": "page.php?id=team"
+    },
+    {
+        "title": "Contact / Free Consultation",
+        "url": "page.php?id=contact"
+    }
+]
