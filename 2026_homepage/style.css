@@ -1,100 +1,202 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
 /* Basic Reset & Body Style */
 body {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
     line-height: 1.6;
-    background-color: #f8f9fa;
-    color: #212529;
-}
+    background-color: #f4f4f4;
+    color: #333;
 
-/* Site Layout using CSS Grid */
-.site-container {
-    display: grid;
-    grid-template-columns: 280px 1fr; /* Sidebar and main content */
-    grid-template-rows: auto 1fr auto; /* Header, content, footer */
-    grid-template-areas:
-        "header header"
-        "nav main"
-        "footer footer";
-    min-height: 100vh;
-    max-width: 1600px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    word-break: keep-all;      /* 한글을 단어 단위로 줄바꿈 */
+    overflow-wrap: break-word; /* 너무 긴 영어단어/URL은 강제로 줄바꿈하여 레이아웃 깨짐 방지 */
 }
 
 /* Header */
-.site-header {
-    grid-area: header;
+.header-bar {
+    background-color: #003d82; /* JP Morgan Blue */
+    color: white;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 1rem 2rem;
-    border-bottom: 1px solid #dee2e6;
 }
 
-.site-header h1 a {
-    color: #000;
+.logo a {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
     text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: 600;
 }
 
-/* Navigation Menu */
-.site-nav {
-    grid-area: nav;
-    padding: 2rem;
-    border-right: 1px solid #dee2e6;
-}
-
-.site-nav ul {
+.nav-list {
     list-style: none;
+    display: flex;
+    margin: 0;
     padding: 0;
 }
 
-.site-nav > ul > li {
+.nav-list li {
+    position: relative;
+    margin: 0 1rem;
+}
+
+.nav-list a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.nav-list a:hover {
+    background-color: #0056b3;
+}
+
+/* Dropdown */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    top: 100%;
+    left: 0;
+}
+
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Header Right */
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    margin-right: 1rem;
+}
+
+.login-btn {
+    background-color: #0056b3;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #004080;
+}
+
+/* Main Content */
+.main-content {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero {
+    text-align: center;
+    padding: 4rem 0;
+    background-color: white;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.hero h1 {
+    font-size: 2.5rem;
     margin-bottom: 1rem;
 }
 
-.site-nav ul li a {
+.hero p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Floating Consultation Button */
+.floating-consult-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001; /* header-bar (1000) 보다 위에 위치 */
+    background-color: #0056b3;
+    color: white;
+    padding: 10px 20px;
     text-decoration: none;
-    color: #495057;
-    font-size: 1rem;
-    font-weight: 500;
-    display: block;
-    transition: color 0.2s;
+    border-radius: 25px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
-.site-nav ul li a:hover {
-    color: #0056b3;
-}
-
-/* Sub-menu styling */
-.site-nav ul ul {
-    margin-top: 0.75rem;
-    padding-left: 1.5rem;
-    border-left: 2px solid #e9ecef;
-}
-
-.site-nav ul ul li {
-    margin: 0.5rem 0;
-}
-
-.site-nav ul ul li a {
-    font-size: 0.95rem;
-    font-weight: 400;
-    color: #6c757d;
-}
-
-/* Main Content Area */
-.site-main {
-    grid-area: main;
-    padding: 2rem 3rem;
+.floating-consult-btn:hover {
+    background-color: #004080;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
 /* Footer */
-.site-footer {
-    grid-area: footer;
-    background-color: #343a40;
-    color: #f8f9fa;
+.footer {
+    background-color: #003d82;
+    color: white;
     text-align: center;
-    padding: 1.5rem;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        margin: 1rem 0;
+    }
+
+    .nav-list li {
+        margin: 0.5rem 0;
+    }
+
+    .header-right {
+        margin-top: 1rem;
+    }
 }

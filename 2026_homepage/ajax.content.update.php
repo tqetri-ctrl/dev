@@ -9,9 +9,9 @@ if (!$is_admin) {
     exit;
 }
 
-$page_id = trim($_POST['page_id']);
-$element_id = trim($_POST['element_id']);
-$content = trim($_POST['content']);
+$page_id = trim($_POST['page_id'] ?? '');
+$element_id = trim($_POST['element_id'] ?? '');
+$content = $_POST['content'] ?? '';
 
 if (!$page_id || !$element_id) {
     echo json_encode(['status' => 'error', 'message' => '필수 파라미터가 누락되었습니다.']);

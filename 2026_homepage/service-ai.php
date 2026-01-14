@@ -15,6 +15,29 @@ $content = $row ? json_decode($row['co_content'], true) : [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI & Digital Consulting - ABNI</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .sub-hero {
+            background-image: url('https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            position: relative;
+            padding: 60px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .sub-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4); /* 어두운 오버레이로 텍스트 가독성 확보 */
+        }
+        .sub-hero > .container {
+            position: relative; /* 오버레이 위에 콘텐츠가 위치하도록 설정 */
+        }
+    </style>
 </head>
 <body data-page-id="<?php echo $page_id; // admin-editor.js에서 이 값을 사용합니다 ?>">
 
