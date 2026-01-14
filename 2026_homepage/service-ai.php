@@ -98,13 +98,11 @@ $content = $row ? json_decode($row['co_content'], true) : [];
         </main>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 ABNI. All rights reserved.</p>
-        </div>
-    </footer>
+    <footer class="footer"></footer>
 
+    <script>const IS_ADMIN = <?php echo $is_admin ? 'true' : 'false'; ?>;</script>
     <script src="header.js"></script>
+    <script src="footer.js"></script>
     <?php if ($is_admin) { // 관리자일 경우에만 에디터 스크립트 로드 ?>
     <script src="admin-editor.js"></script>
     <?php } ?>

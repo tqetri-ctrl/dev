@@ -42,9 +42,10 @@ if (file_exists($page_file)) {
         <div class="content"><?php echo $page_content; ?></div>
     </main>
 
-    <footer class="footer"><p>&copy; 2026 ABNI. All Rights Reserved.</p></footer>
+    <footer class="footer"></footer>
 
     <script>const IS_ADMIN = <?php echo $is_admin ? 'true' : 'false'; ?>;</script>
     <script src="header.js"></script>
+    <script src="footer.js"></script>
 </body>
 </html>
