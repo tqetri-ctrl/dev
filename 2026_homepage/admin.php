@@ -139,6 +139,7 @@ if (isset($_GET['p'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify-html.min.js"></script>
     <title>사이트 관리</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; background-color: #f8f9fa; }
@@ -237,7 +238,7 @@ if (isset($_GET['p'])) {
                         $page_id_for_preview = str_replace('.html', '', $editing_page_file);
                         $preview_url = 'page.php?id=' . urlencode($page_id_for_preview);
                         ?>
-                        <a href="<?php echo $preview_url; ?>" target="_blank" class="preview-btn">미리보기</a>
+                        <button type="button" id="preview-btn" data-preview-url="<?php echo $preview_url; ?>" class="preview-btn">미리보기</button>
                     </p>
                 </form>
             <?php else: ?>
@@ -260,6 +261,21 @@ if (isset($_GET['p'])) {
         const editorTextarea = document.querySelector('#editor');
         const btnWysiwyg = document.querySelector('#btn-wysiwyg');
         const btnHtml = document.querySelector('#btn-html');
+        const previewBtn = document.getElementById('preview-btn');
+
+        // HTML 코드를 보기 좋게 포맷하는 함수 (js-beautify 라이브러리 사용)
+        function formatHtml(html) {
+            if (typeof html_beautify === 'function') {
+                return html_beautify(html, {
+                    indent_size: 2,
+                    end_with_newline: true,
+                    preserve_newlines: true,
+                    max_preserve_newlines: 1,
+                    unformatted: ['a', 'span', 'b', 'i', 'strong', 'em'] // 인라인 요소는 줄바꿈하지 않음
+                });
+            }
+            return html;
+        }
 
         function switchToWysiwyg() {
             if (ckEditorInstance) return;
@@ -278,7 +294,8 @@ if (isset($_GET['p'])) {
 
         function switchToHtml() {
             if (!ckEditorInstance) return;
-            editorTextarea.value = ckEditorInstance.getData();
+            const rawHtml = ckEditorInstance.getData();
+            editorTextarea.value = formatHtml(rawHtml); // HTML 모드로 전환 시 코드를 포맷합니다.
             ckEditorInstance.destroy().then(() => {
                 ckEditorInstance = null;
                 btnHtml.classList.add('active');
@@ -290,18 +307,26 @@ if (isset($_GET['p'])) {
         btnWysiwyg.addEventListener('click', switchToWysiwyg);
         btnHtml.addEventListener('click', switchToHtml);
 
+        // '페이지 저장' 버튼 클릭 시, 파일에 저장될 코드를 항상 포맷하도록 수정합니다.
         editorTextarea.form.addEventListener('submit', () => {
+            let finalHtml;
             if (ckEditorInstance) {
-                editorTextarea.value = ckEditorInstance.getData();
+                finalHtml = ckEditorInstance.getData();
+            } else {
+                finalHtml = editorTextarea.value;
             }
+            editorTextarea.value = formatHtml(finalHtml);
         });
 
-        editorTextarea.value = <?php echo json_encode($editing_page_content); ?>;
+        // 페이지 최초 로드 시
+        const initialContent = <?php echo json_encode($editing_page_content); ?>;
         const preferredMode = localStorage.getItem('editorMode');
         if (preferredMode === 'html') {
+            editorTextarea.value = formatHtml(initialContent);
             btnHtml.classList.add('active');
             btnWysiwyg.classList.remove('active');
         } else {
+            editorTextarea.value = initialContent;
             switchToWysiwyg();
         }
     </script>

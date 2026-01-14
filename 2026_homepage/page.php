@@ -22,6 +22,12 @@ if (file_exists($page_file)) {
     } else {
         $page_title = ucfirst(str_replace('-', ' ', $page_id));
     }
+
+    // Contact 페이지의 경우, CSRF 토큰을 폼에 삽입합니다.
+    if ($page_id === 'contact') {
+        $token = get_token();
+        $page_content = str_replace('<!-- CSRF_TOKEN_PLACEHOLDER -->', '<input type="hidden" name="token" value="'.$token.'">', $page_content);
+    }
 } else {
     http_response_code(404);
     $page_content = "<h1>404 - Page Not Found</h1><p>요청하신 페이지를 찾을 수 없습니다.</p>";
@@ -47,5 +53,19 @@ if (file_exists($page_file)) {
     <script>const IS_ADMIN = <?php echo $is_admin ? 'true' : 'false'; ?>;</script>
     <script src="header.js"></script>
     <script src="footer.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('preview') === 'true') {
+            const previewContent = sessionStorage.getItem('page_preview_content');
+            if (previewContent) {
+                const contentDiv = document.querySelector('.content');
+                if (contentDiv) {
+                    contentDiv.innerHTML = previewContent;
+                }
+            }
+        }
+    });
+    </script>
 </body>
 </html>

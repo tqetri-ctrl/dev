@@ -1,15 +1,15 @@
 <?php
 include_once('./_common.php');
 
+include_once(G5_LIB_PATH.'/mailer.lib.php'); // mailer() 함수를 사용하기 위해 mailer 라이브러리 포함
 // POST 요청만 처리
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     alert('잘못된 접근입니다.');
 }
 
-// 스팸 방지를 위해 referer 체크
-if (!check_url_host($_SERVER['HTTP_REFERER'])) {
-    alert('올바르지 않은 외부 접근입니다.');
-}
+// Referer 체크 대신, 더 안전한 CSRF 토큰 방식으로 변경합니다.
+// check_token() 함수는 토큰이 유효하지 않을 경우 자동으로 오류 메시지를 출력하고 실행을 중단합니다.
+check_token();
 
 // POST로 전송된 데이터 받기 및 정리
 $name = isset($_POST['name']) ? trim(strip_tags($_POST['name'])) : '';
@@ -54,7 +54,7 @@ $mail_content = "
 <div style='padding:10px; border:1px solid #f0f0f0; background:#f9f9f9;'>" . nl2br(htmlspecialchars($message)) . "</div>
 ";
 
-// 그누보드의 mailer 함수를 사용하여 HTML 메일 형식으로 발송합니다.
+// 그누보드의 mailer 함수를 사용하여 HTML 메일 형식으로 발송합니다.(실제 적용 시 gmail 관련 1~6번 설정은 삭제하고, 아래 코드 주석 해제 필요)
 mailer($from_name, $from_email, $to, $mail_subject, $mail_content, 1);
 
 // 5. 완료 후 페이지 이동
