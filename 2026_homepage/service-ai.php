@@ -6,15 +6,21 @@ $page_id = 'service_ai_content';
 
 // DB에서 콘텐츠 가져오기
 $row = sql_fetch(" SELECT co_content FROM {$g5['content_table']} WHERE co_id = '{$page_id}' ");
-$content = $row ? json_decode($row['co_content'], true) : [];
+$content = ($row && $row['co_content']) ? json_decode($row['co_content'], true) : [];
+
+// 관리자이고 AJAX 편집을 사용할 경우 CSRF 토큰을 생성합니다.
+$token = ($is_admin) ? get_token() : '';
 ?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <?php if ($is_admin) { // 관리자일 경우, AJAX 통신을 위한 CSRF 토큰을 meta 태그에 추가합니다. ?>
+    <meta name="csrf-token" content="<?php echo $token; ?>">
+    <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI & Digital Consulting - ABNI</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <style>
         .sub-hero {
             background-image: url('https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');

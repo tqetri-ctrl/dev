@@ -1,0 +1,70 @@
+function switchToWysiwyg() {
+            if (ckEditorInstance) return;
+            const currentHtml = editorTextarea.value;
+            
+            // Super-build는 모든 플러그인이 이미 내장되어 있으므로 
+            // plugins 배열을 수동으로 선언하지 않고 툴바와 htmlSupport 설정만으로 구동하는 것이 가장 안전합니다.
+            CKEDITOR.ClassicEditor
+                .create(editorTextarea, {
+                    // 툴바 설정
+                    toolbar: {
+                        items: [
+                            'sourceEditing', '|', 
+                            'heading', '|',
+                            'bold', 'italic', 'underline', 'strikethrough', 'code', '|',
+                            'link', 'removeFormat', 'blockQuote', '|',
+                            'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                            'bulletedList', 'numberedList', 'todoList', '|',
+                            'outdent', 'indent', 'alignment', '|',
+                            'uploadImage', 'insertTable', 'horizontalLine', 'codeBlock', '|',
+                            'undo', 'redo'
+                        ],
+                        shouldNotGroupWhenFull: true
+                    },
+                    // [핵심] 모든 HTML 태그와 속성을 허용하여 기존 내용 삭제를 원천 봉쇄합니다.
+                    htmlSupport: {
+                        allow: [
+                            {
+                                name: /.*/,
+                                attributes: true,
+                                classes: true,
+                                styles: true
+                            }
+                        ]
+                    },
+                    // 이미지 업로드 설정 (Base64 방식)
+                    image: {
+                        toolbar: [
+                            'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+                            'toggleImageCaption', 'imageTextAlternative', '|',
+                            'linkImage'
+                        ]
+                    },
+                    language: 'ko',
+                    // 테이블 설정
+                    table: {
+                        contentToolbar: [
+                            'tableColumn', 'tableRow', 'mergeTableCells', 
+                            'tableProperties', 'tableCellProperties'
+                        ]
+                    },
+                    // 폰트 크기 설정
+                    fontSize: {
+                        options: [ 9, 11, 13, 'default', 17, 19, 21 ],
+                        supportAllValues: true
+                    },
+                })
+                .then(editor => {
+                    ckEditorInstance = editor;
+                    // 기존 텍스트에어리어의 HTML을 에디터에 주입
+                    editor.setData(currentHtml);
+                    
+                    btnWysiwyg.classList.add('active');
+                    btnHtml.classList.remove('active');
+                    localStorage.setItem('editorMode', 'wysiwyg');
+                })
+                .catch(error => {
+                    console.error('CKEditor 상세 에러:', error);
+                    alert('에디터 로드 중 문제가 발생했습니다.\n오류명: ' + error.name + '\n메시지: ' + error.message);
+                });
+        }

@@ -1,26 +1,45 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
+/* CSS Variables for Modern Design */
+:root {
+    --primary-color: #003d82; /* JP Morgan Blue */
+    --secondary-color: #0056b3; /* Lighter blue for accents/hovers */
+    --text-color: #333;
+    --light-text-color: #f0f0f0;
+    --background-light: #f8f9fa; /* Lighter background */
+    --background-white: #ffffff;
+    --border-color: #dee2e6;
+    --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+    --shadow-medium: 0 4px 12px rgba(0,0,0,0.1);
+    --border-radius: 8px;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 3rem;
+    --font-family-base: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+}
+
 /* Basic Reset & Body Style */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+    font-family: var(--font-family-base);
     line-height: 1.6;
-    background-color: #f4f4f4;
-    color: #333;
-
+    background-color: var(--background-light);
+    color: var(--text-color);
     word-break: keep-all;      /* 한글을 단어 단위로 줄바꿈 */
     overflow-wrap: break-word; /* 너무 긴 영어단어/URL은 강제로 줄바꿈하여 레이아웃 깨짐 방지 */
 }
 
 /* Header */
 .header-bar {
-    background-color: #003d82; /* JP Morgan Blue */
+    background-color: var(--primary-color);
     color: white;
     padding: 0;
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: var(--shadow-light); /* Added subtle shadow */
 }
 
 .container {
@@ -29,7 +48,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: var(--spacing-sm) var(--spacing-md); /* Use variables */
 }
 
 .logo a {
@@ -48,42 +67,49 @@ body {
 
 .nav-list li {
     position: relative;
-    margin: 0 1rem;
+    margin: 0 var(--spacing-sm); /* Use variables */
 }
 
 .nav-list a {
     color: white;
     text-decoration: none;
-    padding: 0.5rem 1rem;
+    padding: var(--spacing-xs) var(--spacing-sm); /* Use variables */
     display: block;
     transition: background-color 0.3s;
+    border-radius: var(--border-radius); /* Added rounded corners */
 }
 
 .nav-list a:hover {
-    background-color: #0056b3;
+    background-color: var(--secondary-color);
 }
 
 /* Dropdown */
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: white;
+    background-color: var(--background-white);
     min-width: 200px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-medium); /* Use variables */
     z-index: 1;
     top: 100%;
     left: 0;
+    border-radius: var(--border-radius); /* Added rounded corners */
+    overflow: hidden; /* Ensures rounded corners apply to children */
 }
 
-.dropdown-content a {
-    color: #333;
+/* 다른 스타일과의 충돌을 피하기 위해 더 구체적인 선택자를 사용합니다. */
+header .nav-list .dropdown-content a {
+    color: var(--text-color);
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    transition: background-color 0.3s, color 0.3s; /* 부드러운 색상 전환 효과 추가 */
 }
 
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
+/* 다른 스타일과의 충돌을 피하기 위해 더 구체적인 선택자를 사용합니다. */
+header .nav-list .dropdown-content a:hover {
+    background-color: var(--primary-color) !important; /* 다른 스타일에 의해 덮어쓰이는 것을 방지하기 위해 !important를 사용합니다. */
+    color: white !important; /* 다른 스타일에 의해 덮어쓰이는 것을 방지하기 위해 !important를 사용합니다. */
 }
 
 .dropdown:hover .dropdown-content {
@@ -92,23 +118,24 @@ body {
 
 /* Main Content */
 .main-content {
-    padding: 2rem;
+    padding: var(--spacing-md); /* Use variables */
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .hero {
     text-align: center;
-    padding: 4rem 0;
-    margin-bottom: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 6rem 0; /* Increased padding for more impact */
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
     position: relative;
-    background-image: url('https://images.pexels.com/photos/593158/pexels-photo-593158.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+    background-image: url('https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); /* New image */
     background-size: cover;
     background-position: center;
     color: white;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    overflow: hidden; /* Ensure overlay and content stay within rounded corners */
 }
 
 .hero::before {
@@ -118,54 +145,56 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* 어두운 오버레이로 텍스트 가독성 확보 */
-    border-radius: 8px; /* 부모 요소의 둥근 모서리와 일치 */
+    background-color: rgba(0, 0, 0, 0.55); /* Slightly darker overlay */
+    border-radius: var(--border-radius);
 }
 
 .hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: 3.5rem; /* Larger font size */
+    margin-bottom: var(--spacing-sm);
     position: relative; /* 오버레이 위에 위치하도록 설정 */
+    z-index: 1; /* Ensure text is above overlay */
 }
 
 .hero p {
-    font-size: 1.2rem;
-    color: #f0f0f0; /* 흰색에 가까운 밝은 회색으로 변경 */
+    font-size: 1.5rem; /* Larger font size */
+    color: var(--light-text-color);
     position: relative; /* 오버레이 위에 위치하도록 설정 */
+    z-index: 1; /* Ensure text is above overlay */
 }
 
 .content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: var(--background-white);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
 }
 
 /* Floating Consultation Button */
 .floating-consult-btn {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
     z-index: 1001; /* header-bar (1000) 보다 위에 위치 */
-    background-color: #0056b3;
+    background-color: var(--secondary-color);
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 25px;
     font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-medium);
     transition: all 0.3s ease;
 }
 
 .floating-consult-btn:hover {
-    background-color: #004080;
+    background-color: var(--primary-color);
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
 /* Contact Form */
 .contact-form {
-    margin-top: 2rem;
+    margin-top: var(--spacing-md);
 }
 
 .form-group {
@@ -174,7 +203,7 @@ body {
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-xs);
     font-weight: bold;
 }
 
@@ -182,7 +211,7 @@ body {
 .form-group textarea {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1rem;
     font-family: inherit;
@@ -191,7 +220,7 @@ body {
 
 .btn-submit {
     display: inline-block;
-    background-color: #0056b3;
+    background-color: var(--secondary-color);
     color: white;
     padding: 0.8rem 1.5rem;
     border: none;
@@ -203,21 +232,21 @@ body {
 }
 
 .btn-submit:hover {
-    background-color: #004080;
+    background-color: var(--primary-color);
 }
 
 /* Contact Page Layout */
 .contact-container {
     display: flex;
-    gap: 3rem;
-    margin-top: 2rem;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
     flex-wrap: wrap;
 }
 
 .contact-info-wrapper {
     flex: 1;
     min-width: 300px;
-    padding-right: 2rem; /* Add some space between columns */
+    padding-right: var(--spacing-md); /* Add some space between columns */
 }
 
 .contact-form-wrapper {
@@ -234,15 +263,15 @@ body {
 .contact-item-icon {
     font-size: 1.8rem;
     margin-right: 1.5rem;
-    color: #0056b3;
+    color: var(--secondary-color);
     line-height: 1.2;
 }
 
 .contact-item-content h4 {
     margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-xs);
     font-size: 1.2rem;
-    color: #333;
+    color: var(--text-color);
 }
 
 .contact-item-content p {
@@ -263,7 +292,7 @@ body {
 .privacy-group {
     display: flex;
     align-items: center;
-    margin-top: 1rem;
+    margin-top: var(--spacing-sm);
 }
 
 .privacy-group input[type="checkbox"] {
@@ -273,8 +302,8 @@ body {
 
 .map-container {
     display: flex;
-    gap: 3rem;
-    margin-top: 3rem;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
     flex-wrap: wrap;
 }
 
@@ -293,11 +322,11 @@ body {
 
 .contact-map h4 {
     margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .contact-info p {
-    margin: 1rem 0;
+    margin: var(--spacing-sm) 0;
 }
 
 .contact-map iframe {
@@ -307,10 +336,10 @@ body {
 
 /* Footer */
 .footer {
-    background-color: #003d82; /* JP Morgan Blue */
+    background-color: var(--primary-color); /* JP Morgan Blue */
     color: #ccc; /* Lighter color for better readability on dark background */
-    padding: 3rem 2rem;
-    margin-top: 2rem;
+    padding: var(--spacing-lg) var(--spacing-md);
+    margin-top: var(--spacing-md);
     font-size: 0.9rem;
 }
 
@@ -320,8 +349,8 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 2rem;
-    margin-bottom: 2rem;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
 }
 
 .footer-section {
@@ -331,7 +360,7 @@ body {
 
 .footer-section h2, .footer-section h3 {
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .footer-logo {
@@ -351,7 +380,7 @@ body {
 }
 
 .footer-section.links li {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .footer-section.links a {
@@ -365,14 +394,14 @@ body {
 }
 
 .footer-section.contact p {
-    margin: 0.5rem 0;
+    margin: var(--spacing-xs) 0;
 }
 
 .footer-bottom {
     text-align: center;
-    border-top: 1px solid #0056b3;
+    border-top: 1px solid var(--secondary-color);
     padding-top: 1.5rem;
-    margin-top: 2rem;
+    margin-top: var(--spacing-md);
 }
 
 .footer-bottom p {
@@ -386,6 +415,158 @@ body {
 
 .footer-bottom a:hover {
     color: white;
+}
+
+/* about.html specific styles */
+.about-section {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.about-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.about-section h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* CEO Section */
+.ceo-section {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+.ceo-text {
+    flex: 2;
+}
+.ceo-image {
+    flex: 1;
+    min-width: 300px;
+}
+.ceo-image img {
+    width: 100%;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    display: block; /* 이미지가 블록 요소처럼 동작하도록 하여 레이아웃 안정성 확보 */
+    height: auto;   /* 너비에 맞춰 높이를 자동으로 조절하여 이미지 비율 유지 */
+}
+
+/* Company Overview */
+.company-overview {
+    list-style: none;
+    padding: 0;
+}
+.company-overview li {
+    padding: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+/* Business Areas */
+.business-areas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+.area-card {
+    background: var(--background-light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+.area-card h4 {
+    margin-top: 0;
+    color: var(--secondary-color);
+}
+.area-card p {
+    flex-grow: 1;
+}
+.area-link {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    text-decoration: none;
+    align-self: flex-end;
+    transition: color 0.3s;
+}
+.area-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* History Timeline */
+.history-timeline {
+    list-style: none;
+    padding: 0;
+    position: relative;
+    border-left: 2px solid var(--primary-color);
+    margin-left: 1rem;
+}
+.history-timeline li {
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+.history-timeline li::before {
+    content: '';
+    position: absolute;
+    left: -9px; /* (16/2) - 2 = 6 */
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    border: 2px solid var(--background-white);
+}
+.history-timeline li strong {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-right: 1rem;
+}
+
+/* Performance Details (Accordion) */
+.performance-details {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    background: var(--background-white);
+}
+.performance-details summary {
+    padding: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+}
+.performance-details[open] summary {
+    border-bottom: 1px solid var(--border-color);
+}
+.performance-details ul {
+    padding: 1rem 1rem 1rem 3rem;
+    margin: 0;
+}
+
+/* Client Grid */
+.client-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+}
+.client-logo-text {
+    padding: 1rem;
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    color: #555;
 }
 
 /* Styles for Admin In-Page Editor */
@@ -439,7 +620,11 @@ textarea.editor-field {
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
-        padding: 1rem;
+        padding: var(--spacing-sm);
+    }
+
+    .ceo-section {
+        flex-direction: column;
     }
 
     .footer-container {
@@ -449,6 +634,10 @@ textarea.editor-field {
 
     .contact-container {
         flex-direction: column;
+    }
+
+    .contact-info-wrapper {
+        padding-right: 0;
     }
 
     .form-row {
@@ -463,10 +652,18 @@ textarea.editor-field {
 
     .nav-list {
         flex-direction: column;
-        margin: 1rem 0;
+        margin: var(--spacing-sm) 0;
     }
 
     .nav-list li {
-        margin: 0.5rem 0;
+        margin: var(--spacing-xs) 0;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
     }
 }

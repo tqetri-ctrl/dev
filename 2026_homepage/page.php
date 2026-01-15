@@ -45,7 +45,34 @@ if (file_exists($page_file)) {
     <div class="header"></div>
 
     <main class="main-content">
-        <div class="content"><?php echo $page_content; ?></div>
+        <div class="content">
+            <?php
+            // 미리보기 모드가 아닐 때는 일반 콘텐츠를 출력합니다.
+            // 미리보기 모드일 때는 이 자리를 비워두고 아래 스크립트가 내용을 채우도록 하여, 콘텐츠가 깜빡이는 현상(FOUC)을 방지합니다.
+            if (!(isset($_GET['preview']) && $_GET['preview'] === 'true')) {
+                echo $page_content;
+            }
+            ?>
+        </div>
+        <?php
+        // '미리보기' 모드일 때, sessionStorage에 저장된 내용으로 페이지 콘텐츠를 교체하는 스크립트를 주입합니다.
+        // .content 요소 바로 뒤에 스크립트를 위치시켜 FOUC(Flash of Unstyled Content)를 최소화합니다.
+        if (isset($_GET['preview']) && $_GET['preview'] === 'true') {
+            echo <<<EOT
+<script>
+    (function() {
+        var previewContent = sessionStorage.getItem('page_preview_content');
+        if (previewContent !== null) {
+            var contentDiv = document.querySelector('.content');
+            if (contentDiv) {
+                contentDiv.innerHTML = previewContent;
+            }
+        }
+    })();
+</script>
+EOT;
+        }
+        ?>
     </main>
 
     <footer class="footer"></footer>
@@ -53,19 +80,5 @@ if (file_exists($page_file)) {
     <script>const IS_ADMIN = <?php echo $is_admin ? 'true' : 'false'; ?>;</script>
     <script src="header.js"></script>
     <script src="footer.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('preview') === 'true') {
-            const previewContent = sessionStorage.getItem('page_preview_content');
-            if (previewContent) {
-                const contentDiv = document.querySelector('.content');
-                if (contentDiv) {
-                    contentDiv.innerHTML = previewContent;
-                }
-            }
-        }
-    });
-    </script>
 </body>
 </html>

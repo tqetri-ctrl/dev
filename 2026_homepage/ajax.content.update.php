@@ -3,11 +3,20 @@ include_once('./_common.php');
 
 header('Content-Type: application/json');
 
+// POST 요청인지 확인합니다.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['status' => 'error', 'message' => '잘못된 접근입니다.']);
+    exit;
+}
+
 // 관리자 체크
 if (!$is_admin) {
     echo json_encode(['status' => 'error', 'message' => '관리자만 접근 가능합니다.']);
     exit;
 }
+
+// CSRF 토큰을 검증하여 보안을 강화합니다.
+check_token();
 
 $page_id = trim($_POST['page_id'] ?? '');
 $element_id = trim($_POST['element_id'] ?? '');

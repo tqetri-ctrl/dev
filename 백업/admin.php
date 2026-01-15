@@ -144,7 +144,7 @@ if (isset($_GET['p'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/super-build/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify-html.min.js"></script>
     <title>사이트 관리</title>
     <style>
@@ -294,66 +294,29 @@ if (isset($_GET['p'])) {
             
             CKEDITOR.ClassicEditor
                 .create(editorTextarea, {
-                    // 'removePlugins' 방식은 의존성 문제가 복잡하여 안정성이 떨어집니다.
-                    // 가장 안정적인 'plugins'(화이트리스트) 방식으로 전환하여 필요한 기능만 명시적으로 로드합니다.
-                    plugins: [
-                        // --- 1. 핵심 기반 플러그인 (Core Engine) ---
-                        CKEDITOR.Essentials,          // 필수 코어 (undo, redo 등)
-                        CKEDITOR.Paragraph,           // 단락(p 태그) 처리
-                        CKEDITOR.Clipboard,           // 클립보드 기능 (붙여넣기 등)
-                        CKEDITOR.Widget,              // 이미지, 테이블 등 '객체' 요소들의 기반
-                        CKEDITOR.ContextualBalloon,   // 링크, 이미지 클릭 시 나타나는 팝업 UI의 기반
-                        CKEDITOR.Notification,        // 이미지 업로드 등 비동기 작업의 상태 알림 UI
-
-                        // --- 2. 편의 기능 및 HTML 지원 ---
-                        CKEDITOR.GeneralHtmlSupport,  // 모든 종류의 HTML 태그 및 속성 허용
-                        CKEDITOR.PasteFromOffice,     // MS 오피스 등에서 붙여넣기 서식 정리
-                        CKEDITOR.Autoformat,          // 마크다운 형식 자동 변환
-                        CKEDITOR.SourceEditing,       // HTML 소스 코드 편집 모드
-
-                        // --- 3. 툴바: 기본 서식 ---
-                        CKEDITOR.Heading,             // 제목 (h1, h2...)
-                        CKEDITOR.Bold,                // 굵게
-                        CKEDITOR.Italic,              // 기울임
-                        CKEDITOR.Underline,           // 밑줄
-                        CKEDITOR.Strikethrough,       // 취소선
-                        CKEDITOR.Code,                // 인라인 코드
-                        CKEDITOR.RemoveFormat,        // 서식 지우기
-                        CKEDITOR.BlockQuote,          // 인용구
-                        CKEDITOR.HorizontalLine,      // 가로줄
-                        CKEDITOR.Alignment,           // 문단 정렬
-
-                        // --- 4. 툴바: 링크 (로직 + UI) ---
-                        CKEDITOR.Link,                // 하이퍼링크 로직
-                        CKEDITOR.LinkUI,              // 링크 UI (입력 폼)
-
-                        // --- 5. 툴바: 폰트 ---
-                        CKEDITOR.Font,                // 폰트 관련 플러그인의 핵심 의존성
-                        CKEDITOR.FontFamily,          // 글꼴
-                        CKEDITOR.FontSize,            // 글자 크기
-                        CKEDITOR.FontColor,           // 글자 색
-                        CKEDITOR.FontBackgroundColor, // 글자 배경 색
-
-                        // --- 6. 툴바: 리스트 (로직 + UI) ---
-                        CKEDITOR.List,                // 순서 있는/없는 목록
-                        CKEDITOR.ListProperties,      // 목록 UI (시작 번호, 스타일 등)
-                        CKEDITOR.TodoList,            // 할 일 목록 (체크박스)
-                        CKEDITOR.Indent,              // 들여쓰기
-                        CKEDITOR.IndentBlock,         // 단락 전체 들여쓰기
-                        
-                        // --- 7. 툴바: 미디어 및 코드 블록 ---
-                        CKEDITOR.Image, CKEDITOR.ImageBlock, CKEDITOR.ImageInline,
-                        CKEDITOR.ImageToolbar, CKEDITOR.ImageCaption, CKEDITOR.ImageStyle,
-                        CKEDITOR.ImageResize, CKEDITOR.ImageUpload, CKEDITOR.Base64UploadAdapter,
-                        CKEDITOR.LinkImage,
-                        CKEDITOR.CodeBlock,
-
-                        // --- 8. 툴바: 테이블 (로직 + UI) ---
-                        CKEDITOR.Table,
-                        CKEDITOR.TableToolbar,
-                        CKEDITOR.TableProperties,
-                        CKEDITOR.TableCellProperties,
-                        CKEDITOR.TableSelection
+                    // CKEditor 5 super-build는 대부분의 플러그인을 기본으로 로드하므로,
+                    // 제거해야 할 불필요한 플러그인만 명시합니다. (블랙리스트 방식)
+                    removePlugins: [
+                        'CKFinder',
+                        'EasyImage',
+                        'RealTimeCollaborativeComments',
+                        'RealTimeCollaborativeTrackChanges',
+                        'RealTimeCollaborativeRevisionHistory',
+                        'PresenceList',
+                        'Comments',
+                        'TrackChanges',
+                        'TrackChangesData',
+                        'RevisionHistory',
+                        'Pagination',
+                        'WProofreader',
+                        'MathType',
+                        'SlashCommand',
+                        'Template',
+                        'DocumentOutline',
+                        'FormatPainter',
+                        'TableOfContents',
+                        'FontBackgroundColorEditing',
+                        'AIAssistant'
                     ],
                     toolbar: {
                         items: [
@@ -379,9 +342,6 @@ if (isset($_GET['p'])) {
                                 styles: true
                             }
                         ]
-                    },
-                    image: {
-                        toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
                     }
                 })
                 .then(editor => {
@@ -393,12 +353,9 @@ if (isset($_GET['p'])) {
                     localStorage.setItem('editorMode', 'wysiwyg');
                 })
                 .catch(error => {
-                    console.error('CKEditor 로드 오류:', error);
-                    alert('에디터 로드 실패!\n\n오류: ' + (error.message || '알 수 없는 오류'));
-                    // 폴백: HTML 모드로 자동 전환
-                    editorTextarea.style.display = 'block';
-                    btnHtml.classList.add('active');
-                    btnWysiwyg.classList.remove('active');
+                    // [디버깅] 상세 에러 메시지를 사용자에게 직접 보여줌
+                    console.error('CKEditor Load Error:', error);
+                    alert('에디터 로드 실패!\n\n오류 내용: ' + error.message + '\n\n(이 메시지를 캡처하여 문의해주세요)');
                 });
         }
 
@@ -472,18 +429,8 @@ if (isset($_GET['p'])) {
         document.addEventListener('DOMContentLoaded', function() {
             // 1. 초기 데이터 (서버에서 가져온 JSON)
             let navigationData = <?php echo $nav_content; ?>;
-            
-            // 데이터 유효성 검증
-            if (!Array.isArray(navigationData)) {
-                console.warn('내비게이션 데이터가 배열이 아닙니다. 초기화합니다.');
-                navigationData = [];
-            }
 
             const listElement = document.getElementById('main-menu-list');
-            if (!listElement) {
-                console.error('main-menu-list 요소를 찾을 수 없습니다.');
-                return;
-            }
 
             // 2. 화면에 트리 구조 그리기 함수
             function renderNav() {

@@ -71,6 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('element_id', elementId);
                 formData.append('content', newContent);
 
+                // CSRF 토큰을 meta 태그에서 읽어와 FormData에 추가합니다.
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                if (csrfToken) {
+                    formData.append('token', csrfToken);
+                }
+
                 fetch('/abni/ajax.content.update.php', { method: 'POST', body: formData })
                     .then(response => response.json())
                     .then(data => {
