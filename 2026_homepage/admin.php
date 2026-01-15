@@ -344,8 +344,8 @@ if (isset($_GET['p'])) {
                         // --- 7. 툴바: 미디어 및 코드 블록 ---
                         CKEDITOR.Image, CKEDITOR.ImageBlock, CKEDITOR.ImageInline,
                         CKEDITOR.ImageToolbar, CKEDITOR.ImageCaption, CKEDITOR.ImageStyle,
-                        CKEDITOR.ImageResize, CKEDITOR.ImageUpload, CKEDITOR.Base64UploadAdapter,
-                        CKEDITOR.LinkImage,
+                        CKEDITOR.ImageResize, CKEDITOR.ImageUpload, // Base64UploadAdapter를 제거하여 서버 업로드 방식을 활성화합니다.
+                        CKEDITOR.LinkImage, 
                         CKEDITOR.CodeBlock,
 
                         // --- 8. 툴바: 테이블 (로직 + UI) ---
@@ -383,6 +383,10 @@ if (isset($_GET['p'])) {
                     image: {
                         toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
                     }
+                    // 서버에 이미지를 업로드하기 위한 SimpleUpload 어댑터 설정
+                    simpleUpload: {
+                        uploadUrl: 'upload.php'
+                    },
                 })
                 .then(editor => {
                     ckEditorInstance = editor;

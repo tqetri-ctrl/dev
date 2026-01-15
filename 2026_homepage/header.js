@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <header class="header-bar">
                 <div class="container">
                     <div class="logo">
-                        <a href="index.php">ABNI</a>
+                        <a href="index.php"><img src="/abni/data/uploads/logo.jpg?v=${cacheBuster}" alt="ABNI Logo"></a>
                     </div>
                     <nav class="nav">
                         <ul class="nav-list">
