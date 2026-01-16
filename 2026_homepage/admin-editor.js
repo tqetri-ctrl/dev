@@ -3,6 +3,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageId = document.body.dataset.pageId;
     if (!pageId) return;
 
+    // admin.php와 유사한 CKEditor 설정을 정의합니다. 인라인 편집에 맞게 툴바를 일부 조정했습니다.
+    const ckeditorConfig = {
+        removePlugins: [
+            'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges', 'RealTimeCollaborativeRevisionHistory', 'RealTimeCollaborativeEditing', 'Comments', 'TrackChanges', 'TrackChangesData', 'RevisionHistory', 'PresenceList',
+            'WProofreader', 'AIAssistant', 'MathType', 'CKFinder', 'EasyImage', 'CKBox', 'CloudServices',
+            'ExportPdf', 'ExportWord', 'ImportFromWord', 'Pagination', 'SlashCommand', 'Template', 'DocumentOutline', 'FormatPainter', 'TableOfContents', 'Title', 'MediaEmbed', 'HtmlEmbed', 'SourceEditing'
+        ],
+        toolbar: {
+            items: [
+                'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'link', 'removeFormat', 'blockQuote', '|', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'uploadImage', 'insertTable', '|', 'undo', 'redo'
+            ]
+        },
+        language: 'ko',
+        simpleUpload: {
+            uploadUrl: 'upload.php'
+        }
+    };
+
+    // 현재 활성화된 에디터 인스턴스를 추적하기 위한 변수
+    let activeEditorInstance = null;
+
     // 편집 가능한 모든 요소를 선택
     const editableElements = document.querySelectorAll('[data-editable-id]');
 
@@ -33,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let editorField;
             if (isMultiLine) {
-                editorField = document.createElement('textarea');
-                editorField.value = originalContent.replace(/<br\s*\/?>/gi, '\n'); // <br> 태그를 줄바꿈 문자로 변환
+                // CKEditor를 적용할 div 요소를 생성합니다.
+                editorField = document.createElement('div');
             } else {
                 editorField = document.createElement('input');
                 editorField.type = 'text';
@@ -60,12 +81,36 @@ document.addEventListener('DOMContentLoaded', function() {
             editorWrapper.appendChild(buttonGroup);
 
             el.parentNode.insertBefore(editorWrapper, el.nextSibling); // 원래 요소 바로 다음에 편집기를 삽입
-            editorField.focus();
+
+            if (isMultiLine) {
+                CKEDITOR.ClassicEditor
+                    .create(editorField, ckeditorConfig)
+                    .then(editor => {
+                        activeEditorInstance = editor;
+                        editor.setData(originalContent);
+                    })
+                    .catch(error => {
+                        console.error('CKEditor for inline editor failed to load:', error);
+                        alert('에디터 로딩에 실패했습니다. 기본 텍스트 모드로 전환합니다.');
+                        // CKEditor 실패 시, 단순 textarea로 대체
+                        const fallbackTextarea = document.createElement('textarea');
+                        fallbackTextarea.className = 'editor-field';
+                        fallbackTextarea.value = originalContent.replace(/<br\s*\/?>/gi, '\n');
+                        editorWrapper.replaceChild(fallbackTextarea, editorField);
+                        editorField = fallbackTextarea; // editorField 변수를 새 textarea로 교체
+                    });
+            } else {
+                editorField.focus();
+            }
 
             // '저장' 버튼 클릭 이벤트
             saveButton.addEventListener('click', function() {
-                const newContent = isMultiLine ? editorField.value.replace(/\n/g, '<br>') : editorField.value;
-
+                let newContent;
+                if (isMultiLine && activeEditorInstance) {
+                    newContent = activeEditorInstance.getData();
+                } else {
+                    newContent = isMultiLine ? editorField.value.replace(/\n/g, '<br>') : editorField.value;
+                }
                 const formData = new FormData();
                 formData.append('page_id', pageId);
                 formData.append('element_id', elementId);
@@ -97,9 +142,18 @@ document.addEventListener('DOMContentLoaded', function() {
             cancelButton.addEventListener('click', removeEditor);
 
             function removeEditor() {
-                editorWrapper.remove();
-                el.style.display = ''; // 숨겼던 원래 요소를 다시 표시
-                el.classList.remove('editor-active');
+                if (activeEditorInstance) {
+                    activeEditorInstance.destroy().then(() => {
+                        editorWrapper.remove();
+                        el.style.display = ''; // 숨겼던 원래 요소를 다시 표시
+                        el.classList.remove('editor-active');
+                        activeEditorInstance = null;
+                    });
+                } else {
+                    editorWrapper.remove();
+                    el.style.display = ''; // 숨겼던 원래 요소를 다시 표시
+                    el.classList.remove('editor-active');
+                }
             }
         });
     });

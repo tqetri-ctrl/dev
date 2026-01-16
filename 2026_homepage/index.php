@@ -1,6 +1,6 @@
 <?php
 // 그누보드 공통 파일 포함
-include_once('./_common.php');
+include_once('./common.php');
 
 $g5['title'] = 'ABNI';
 ?>
@@ -22,10 +22,10 @@ $g5['title'] = 'ABNI';
         </section>
         <section class="content">
             <?php
-            // data/pages/about.html 파일의 내용을 불러와 'About Us' 섹션에 표시합니다.
-            $about_content_file = __DIR__ . '/data/pages/about.html';
-            if (file_exists($about_content_file)) {
-                echo file_get_contents($about_content_file);
+            // DB의 g5_content_table에서 ID가 'about'인 콘텐츠를 불러옵니다.
+            $row = sql_fetch(" SELECT co_content FROM {$g5['content_table']} WHERE co_id = 'about' ");
+            if ($row && $row['co_content']) {
+                echo $row['co_content'];
             } else {
                 echo '<h2>About Us</h2><p>Content is being prepared.</p>';
             }

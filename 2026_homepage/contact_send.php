@@ -1,5 +1,5 @@
 <?php
-include_once('./_common.php');
+include_once('./common.php');
 
 include_once(G5_LIB_PATH.'/mailer.lib.php'); // mailer() 함수를 사용하기 위해 mailer 라이브러리 포함
 // POST 요청만 처리

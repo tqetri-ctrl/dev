@@ -1,8 +1,20 @@
 <?php
-include_once('./_common.php');
+include_once('./common.php');
 
-// 페이지 ID (DB에서 이 ID로 콘텐츠를 찾습니다)
-$page_id = 'service_ai_content';
+// 5. 사이드바 메뉴를 동적으로 생성하기 위해 services.json 파일에서 서비스 목록을 읽어옵니다.
+$services_file = __DIR__ . '/services.json';
+$services_menu = file_exists($services_file) ? json_decode(file_get_contents($services_file), true) : [];
+
+// 1. URL에서 페이지 슬러그(slug)를 가져와서 DB에서 사용할 페이지 ID를 생성합니다.
+// 예: page_template.php?id=service-ai -> $page_id_slug = 'service-ai' -> $page_id = 'service-ai_content'
+$page_id_slug = isset($_GET['id']) ? preg_replace('/[^a-zA-Z0-9-]/', '', $_GET['id']) : '';
+
+if (empty($page_id_slug)) {
+    // ID가 없으면 404 처리 또는 홈페이지로 리디렉션
+    alert('페이지를 찾을 수 없습니다.', G5_URL);
+}
+
+$page_id = $page_id_slug . '_content';
 
 // DB에서 콘텐츠 가져오기
 $row = sql_fetch(" SELECT co_content FROM {$g5['content_table']} WHERE co_id = '{$page_id}' ");
@@ -10,6 +22,9 @@ $content = ($row && $row['co_content']) ? json_decode($row['co_content'], true) 
 
 // 관리자이고 AJAX 편집을 사용할 경우 CSRF 토큰을 생성합니다.
 $token = ($is_admin) ? get_token() : '';
+
+// 2. 페이지 제목을 동적으로 설정합니다. DB에 제목이 없으면 슬러그를 기반으로 생성합니다.
+$page_title = $content['sub_hero_title'] ?? ucfirst(str_replace('-', ' ', $page_id_slug));
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -19,7 +34,7 @@ $token = ($is_admin) ? get_token() : '';
     <meta name="csrf-token" content="<?php echo $token; ?>">
     <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI & Digital Consulting - ABNI</title>
+    <title><?php echo htmlspecialchars($page_title); ?> - ABNI</title>
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <style>
         .sub-hero {
@@ -53,32 +68,16 @@ $token = ($is_admin) ? get_token() : '';
 
     <section class="sub-hero">
         <div class="container">
-            <p class="breadcrumb">Home &gt; Services &gt; AI / Digital Consulting</p>
-            <h1 data-editable-id="sub_hero_title"><?php echo $content['sub_hero_title'] ?? 'AI & Digital Consulting'; ?></h1>
+            <!-- 3. Breadcrumb과 제목을 동적으로 표시합니다. -->
+            <p class="breadcrumb" data-editable-id="breadcrumb"><?php echo $content['breadcrumb'] ?? 'Home &gt; Services &gt; ' . htmlspecialchars($page_title); ?></p>
+            <h1 data-editable-id="sub_hero_title"><?php echo htmlspecialchars($page_title); ?></h1>
         </div>
     </section>
 
     <div class="container content-wrapper">
         
-        <aside class="sidebar">
-            <h3>Our Services</h3>
-            <ul class="sidebar-menu">
-                <li><a href="service-ai.php" class="active">AI / Digital Consulting</a></li>
-                <li><a href="#">Data Analytics Strategy</a></li>
-                <li><a href="#">SW Process (SPICE/CMMI)</a></li>
-                <li><a href="#">Safety (ISO 26262)</a></li>
-                <li><a href="#">Cyber Security</a></li>
-                <li><a href="#">Engineering Tools (Toolkit)</a></li>
-            </ul>
-
-            <div class="sidebar-cta">
-                <h4 data-editable-id="sidebar_cta_title"><?php echo $content['sidebar_cta_title'] ?? 'Need Expert Advice?'; ?></h4>
-                <p data-editable-id="sidebar_cta_description"><?php echo $content['sidebar_cta_description'] ?? '전문가와 함께 귀사의 AI 전략을 논의해보세요.'; ?></p>
-                <a href="index.php#contact" class="btn-small">Contact Us</a>
-            </div>
-        </aside>
-
-        <main class="main-article">
+        <!-- 사이드바를 제거하고, 메인 콘텐츠가 전체 너비를 차지하도록 스타일을 추가합니다. -->
+        <main class="main-article" style="width: 100%;">
             <h2 data-editable-id="main_article_title"><?php echo $content['main_article_title'] ?? 'Transforming Business with Intelligence'; ?></h2>
             <p class="lead" data-editable-id="main_article_lead_paragraph">
                 <?php echo $content['main_article_lead_paragraph'] ?? '인공지능(AI)과 데이터 기술은 더 이상 선택이 아닌 필수입니다. ABNI는 기업이 보유한 데이터의 잠재력을 <br>깨우고, 실질적인 비즈니스 가치를 창출하는 AI 도입 로드맵을 제시합니다.'; ?>
@@ -110,6 +109,7 @@ $token = ($is_admin) ? get_token() : '';
     <script src="header.js"></script>
     <script src="footer.js"></script>
     <?php if ($is_admin) { // 관리자일 경우에만 에디터 스크립트 로드 ?>
+    <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/super-build/ckeditor.js"></script>
     <script src="admin-editor.js"></script>
     <?php } ?>
 </body>

@@ -1,41 +1,25 @@
 <?php
-include_once('./_common.php');
+include_once('./common.php');
 
-$page_id = 'home'; // 기본 페이지, 사용자가 id를 제공하지 않을 경우
-if (isset($_GET['id'])) {
+$f (isset($_GET['id'])) {
     // 보안: 디렉토리 탐색 공격 방지
     $req_id = preg_replace('/[^a-zA-Z0-9-]/', '', $_GET['id']);
     if (!empty($req_id)) {
-        $page_id = $req_id;
-    }
+        $co_id = $req_id;
 }
 
-$page_file = __DIR__ . "/data/pages/{$page_id}.html";
-$page_content = '';
-$page_title = 'Page Not Found';
+$row = sql_fetch(" SELECT co_subject, co_content FROM {$g5['content_table']} WHERE co_id = '" . sql_real_escape_string($co_id) . "' ");
 
-if (file_exists($page_file)) {
-    $page_content = file_get_contents($page_file);
-    // h1 태그 내용으로 페이지 제목 자동 설정
-    if (preg_match('/<h1.*?>(.*?)<\/h1>/i', $page_content, $matches)) {
-        $page_title = strip_tags($matches[1]);
-    } else {
-        $page_title = ucfirst(str_replace('-', ' ', $page_id));
-    }
+page_title = 'Page Not Found';
 
-    // Contact 페이지의 경우, CSRF 토큰을 폼에 삽입합니다.
-    if ($page_id === 'contact') {
-        $token = get_token();
-        $page_content = str_replace('<!-- CSRF_TOKEN_PLACEHOLDER -->', '<input type="hidden" name="token" value="'.$token.'">', $page_content);
-    }
-} else {
-    http_response_code(404);
-    $page_content = "<h1>404 - Page Not Found</h1><p>요청하신 페이지를 찾을 수 없습니다.</p>";
+if ($row) {
+    $page_content = $row['co_content'];
+    $page_title = $row['co_subject'];
+/age_content = "<h1>404 - Page Not Found</h1><p>요청하신 페이지를 찾을 수 없습니다.</p>";
 }
 ?>
 <!DOCTYPE html>
 <html lang="ko">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - ABNI</title>

@@ -1,0 +1,26 @@
+[
+    {
+        "id": "service-ai",
+        "title": "AI / Digital Consulting"
+    },
+    {
+        "id": "data-analytics",
+        "title": "Data Analytics Strategy"
+    },
+    {
+        "id": "sw-process",
+        "title": "SW Process (SPICE/CMMI)"
+    },
+    {
+        "id": "safety",
+        "title": "Safety (ISO 26262)"
+    },
+    {
+        "id": "cyber-security",
+        "title": "Cyber Security"
+    },
+    {
+        "id": "engineering-tools",
+        "title": "Engineering Tools (Toolkit)"
+    }
+]
