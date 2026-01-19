@@ -69,6 +69,9 @@ function save_menu_data_to_db($nav_data) {
             }
         }
     }
+
+    // 메뉴 DB가 변경되었으므로, 메뉴 캐시를 삭제하여 변경사항이 즉시 반영되도록 합니다.
+    g5_delete_cache('menu-0');
 }
 
 // 데이터 저장 처리
