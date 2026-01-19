@@ -34,30 +34,24 @@ if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
     include_once('cloudflare.check.php');    // cloudflare 의 ip 대역인지 체크
 }
 
-function g5_path()
-{
-    $chroot = substr($_SERVER['SCRIPT_FILENAME'], 0, strpos($_SERVER['SCRIPT_FILENAME'], dirname(__FILE__))); 
-    $result['path'] = str_replace('\\', '/', $chroot.dirname(__FILE__)); 
-    $server_script_name = preg_replace('/\/+/', '/', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])); 
-    $server_script_filename = preg_replace('/\/+/', '/', str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME'])); 
-    $tilde_remove = preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $server_script_name); 
-    $document_root = str_replace($tilde_remove, '', $server_script_filename); 
-    $pattern = '/.*?' . preg_quote($document_root, '/') . '/i';
-    $root = preg_replace($pattern, '', $result['path']); 
-    $port = ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) ? '' : ':'.$_SERVER['SERVER_PORT']; 
-    $http = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') ? 's' : '') . '://'; 
-    $user = str_replace(preg_replace($pattern, '', $server_script_filename), '', $server_script_name); 
-    $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']; 
-    if(isset($_SERVER['HTTP_HOST']) && preg_match('/:[0-9]+$/', $host)) 
-        $host = preg_replace('/:[0-9]+$/', '', $host); 
-    $host = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", '', $host); 
-    $result['url'] = $http.$host.$port.$user.$root; 
-    return $result;
+// 경로 문제를 근본적으로 해결하기 위해, 복잡한 g5_path() 함수 대신 __DIR__을 사용하여 경로를 설정하고,
+// 프로젝트 루트를 include_path의 최우선 순위로 지정합니다.
+// 이렇게 하면 bbs/login.php와 같은 하위 폴더의 파일이 './_head.sub.php'처럼 잘못된 상대 경로로 파일을 포함하려 할 때,
+// PHP가 프로젝트 루트에서 해당 파일을 먼저 찾아 오류를 방지할 수 있습니다.
+$g5_path = array();
+$g5_path['path'] = str_replace('\\', '/', __DIR__);
+$g5_path['url'] = '';
+if (isset($_SERVER['HTTP_HOST'])) {
+    $g5_path['url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+    $url_path = str_replace(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '', $g5_path['path']);
+    $g5_path['url'] .= $url_path;
 }
 
-$g5_path = g5_path();
-
 include_once($g5_path['path'].'/config.php');   // 설정 파일
+
+if (defined('G5_PATH_ROOT')) {
+    set_include_path(G5_PATH_ROOT . PATH_SEPARATOR . get_include_path());
+}
 
 unset($g5_path);
 
@@ -92,8 +86,9 @@ function sql_escape_string($str)
         $pattern = G5_ESCAPE_PATTERN;
         $replace = G5_ESCAPE_REPLACE;
 
-        if($pattern)
+        if($pattern && is_array($pattern) && is_array($replace)) {
             $str = preg_replace($pattern, $replace, $str);
+        }
     }
 
     $str = call_user_func('addslashes', $str);

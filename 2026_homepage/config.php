@@ -206,9 +206,13 @@ define('G5_DISPLAY_SQL_ERROR', false);
 define('G5_ESCAPE_FUNCTION', 'sql_escape_string');
 
 // sql_escape_string 함수에서 사용될 패턴
-//define('G5_ESCAPE_PATTERN',  '/(and|or).*(union|select|insert|update|delete|from|where|limit|create|drop).*/i');
-//define('G5_ESCAPE_REPLACE',  '');
-define('G5_ESCAPE_PATTERN', "/['\"\\\\\\x00-\\x1F]/");
+// 패턴과 대체값을 배열로 정의
+define('G5_ESCAPE_PATTERN', array(
+    "/['\"\\\\\\x00-\\x1F]/"  // 특수문자 필터링
+));
+define('G5_ESCAPE_REPLACE', array(
+    ''  // 빈 문자열로 제거
+));
 define('G5_PATH_ROOT', __DIR__);
 
 // 게시판에서 링크의 기본개수를 말합니다.
