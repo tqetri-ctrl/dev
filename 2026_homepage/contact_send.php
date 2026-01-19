@@ -1,6 +1,13 @@
 <?php
-include_once('./common.php');
+include_once('./_common.php');
 
+session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("잘못된 접근입니다 (CSRF 토큰 불일치).");
+    }
+    // 이후 메일 발송 로직 처리..
+}
 include_once(G5_LIB_PATH.'/mailer.lib.php'); // mailer() 함수를 사용하기 위해 mailer 라이브러리 포함
 // POST 요청만 처리
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

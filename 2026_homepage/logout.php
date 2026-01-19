@@ -1,5 +1,5 @@
 <?php
-include_once('./common.php');
+include_once('./_common.php');
 
 // 이전의 직접 로그아웃 처리(member_logout()) 방식이 함수를 찾지 못하는 오류를 발생시켰습니다.
 // 이는 그누보드의 라이브러리가 특정 상황에서 완전히 로드되지 않았을 수 있음을 의미합니다.

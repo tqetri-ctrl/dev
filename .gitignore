@@ -22,3 +22,17 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+2026_homepage/adm/admin.lib.php
+2026_homepage/adm/admin.menu100.php
+2026_homepage/adm/
+2026_homepage/bbs/
+2026_homepage/css/
+2026_homepage/extend/
+2026_homepage/js/
+2026_homepage/mobile/
+2026_homepage/plugin/
+2026_homepage/theme/
+2026_homepage/lib/
+2026_homepage/data/
+2026_homepage/img/
+2026_homepage/skin/

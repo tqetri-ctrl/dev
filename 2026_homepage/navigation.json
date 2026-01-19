@@ -8,20 +8,12 @@
         "url": "page.php?id=services",
         "submenu": [
             {
-                "title": "시스템/SW/AI Process Consulting",
+                "title": "Process Consulting",
                 "url": "page.php?id=services-process"
             },
             {
                 "title": "고신뢰성 AI/Data 컨설팅",
                 "url": "page.php?id=services-ai-data"
-            },
-            {
-                "title": "Data 품질",
-                "url": "page.php?id=services-data-quality"
-            },
-            {
-                "title": "AI 신뢰성",
-                "url": "page.php?id=services-ai-reliability"
             }
         ]
     },
@@ -62,7 +54,7 @@
         "url": "page.php?id=team"
     },
     {
-        "title": "Contact / Free Consultation",
-        "url": "page.php?id=contact"
+        "title": "Contact",
+        "url": "contact.php"
     }
 ]

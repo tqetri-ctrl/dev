@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <header class="header-bar">
                 <div class="container">
                     <div class="logo">
-                        <a href="index.php"><img src="/abni/data/uploads/logo.jpg?v=${cacheBuster}" alt="ABNI Logo"></a>
+                        <a href="index.php"><img src="/abni/data/uploads/logo.png?v=${cacheBuster}" alt="ABNI Logo"></a>
                     </div>
                     <nav class="nav">
                         <ul class="nav-list">
@@ -49,6 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('Error fetching navigation:', error));
 
     // 모든 페이지에 Free Consultation 플로팅 버튼 추가
-    const floatingBtnHTML = `<a href="page.php?id=contact" class="floating-consult-btn">무료 상담 신청</a>`;
+    const floatingBtnHTML = `<a href="contact.php" class="floating-consult-btn">무료 상담 신청</a>`;
     document.body.insertAdjacentHTML('beforeend', floatingBtnHTML);
 });

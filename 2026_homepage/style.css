@@ -80,16 +80,18 @@ body {
 .nav-list > li > a {
     color: white;
     text-decoration: none;
-    padding: var(--spacing-xs) var(--spacing-sm); /* Use variables */
+    padding: var(--spacing-sm) var(--spacing-sm); /* 패딩을 조금 더 주어 클릭 영역 확보 */
     display: block;
-    /* transition: background-color 0.3s; */ /* 밑줄 효과로 변경되므로 전환 효과 제거 */
-    border-radius: var(--border-radius); /* Added rounded corners */
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
+    position: relative;
 }
 
 /* 상위 메뉴 항목 호버 스타일 */
 .nav-list > li > a:hover {
-    text-decoration: underline; /* 밑줄 표시 */
-    font-weight: bold; /* 굵은 글씨로 변경 */
+    /* text-decoration: underline; */ /* 밑줄 표시 */
+    /* font-weight: bold; */ /* 굵은 글씨로 변경 */
+    transform: translateY(-2px); /* 살짝 위로 이동 */
+    color: #aed4ff; /* 밝은 파란색으로 변경 */
 }
 
 /* Dropdown */
@@ -112,13 +114,14 @@ body {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    /* transition: background-color 0.3s, color 0.3s; */ /* 밑줄 효과로 변경되므로 전환 효과 제거 */
+    transition: all 0.2s ease-in-out; /* 부드러운 전환 효과 */
 }
 
 /* 하위 메뉴 항목 호버 스타일 */
 .dropdown-content a:hover {
-    text-decoration: underline; /* 밑줄 표시 */
-    font-weight: bold; /* 굵은 글씨로 변경 */
+    background-color: var(--background-light);
+    color: var(--primary-color);
+    transform: translateX(5px); /* 오른쪽으로 살짝 이동 */
 }
 
 .dropdown:hover .dropdown-content {
@@ -133,43 +136,50 @@ body {
 }
 
 .hero {
-    text-align: center;
-    padding: 6rem 0; /* Increased padding for more impact */
-    margin-bottom: var(--spacing-md);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-medium);
     position: relative;
-    background-image: url('https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); /* New image */
+    height: 70vh; /* Use viewport height for responsiveness */
+    min-height: 500px;
+    background-image: url('https://images.pexels.com/photos/5473955/pexels-photo-5473955.jpeg?auto=compress&cs=tinysrgb&w=1920'); /* New professional image */
     background-size: cover;
     background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    overflow: hidden; /* Ensure overlay and content stay within rounded corners */
+    margin-bottom: var(--spacing-md);
 }
 
 .hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.55); /* Slightly darker overlay */
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 25, 50, 0.6); /* Dark blue overlay for professional look */
+}
+
+.hero-text-container {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 2rem 3rem;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for readability */
     border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    text-align: left;
 }
 
-.hero h1 {
-    font-size: 3.5rem; /* Larger font size */
-    margin-bottom: var(--spacing-sm);
-    position: relative; /* 오버레이 위에 위치하도록 설정 */
-    z-index: 1; /* Ensure text is above overlay */
+.hero-text-container h2 {
+    font-size: 2.2rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    padding-bottom: 1rem;
 }
 
-.hero p {
-    font-size: 1.5rem; /* Larger font size */
-    color: var(--light-text-color);
-    position: relative; /* 오버레이 위에 위치하도록 설정 */
-    z-index: 1; /* Ensure text is above overlay */
+.hero-text-container p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
 }
 
 .content {
@@ -237,11 +247,13 @@ body {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
 }
 
 .btn-submit:hover {
     background-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 /* Contact Page Layout */
@@ -267,6 +279,14 @@ body {
     display: flex;
     align-items: flex-start;
     margin-bottom: 2.5rem;
+    transition: all 0.3s ease;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+}
+
+.contact-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
 }
 
 .contact-item-icon {
@@ -395,11 +415,13 @@ body {
 .footer-section.links a {
     color: #ccc;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: all 0.3s ease;
 }
 
 .footer-section.links a:hover {
     color: white;
+    text-decoration: underline;
+    padding-left: 5px;
 }
 
 .footer-section.contact p {
@@ -420,10 +442,12 @@ body {
 .footer-bottom a {
     color: #ccc;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .footer-bottom a:hover {
     color: white;
+    text-decoration: underline;
 }
 
 /* about.html specific styles */
@@ -487,6 +511,13 @@ body {
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
+    transition: all 0.3s ease-in-out;
+}
+
+.area-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--primary-color);
 }
 .area-card h4 {
     margin-top: 0;
@@ -516,7 +547,7 @@ body {
     border-left: 2px solid var(--primary-color);
     margin-left: 1rem;
 }
-.history-timeline li {
+.history-timeline li { 
     padding-left: 2rem;
     margin-bottom: 1rem;
     position: relative;
@@ -524,7 +555,7 @@ body {
 .history-timeline li::before {
     content: '';
     position: absolute;
-    left: -9px; /* (16/2) - 2 = 6 */
+    left: -9px; /* (16/2) - 2 = 6 */ 
     top: 5px;
     width: 16px;
     height: 16px;
@@ -538,27 +569,54 @@ body {
     margin-right: 1rem;
 }
 
-/* Performance Details (Accordion) */
-.performance-details {
+/* Accordion Style */
+.accordion { /* This is the container for an accordion item */
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
     background: var(--background-white);
+    overflow: hidden; /* Important for max-height transition */
 }
-.performance-details summary {
+
+.accordion .accordion-header {
+    width: 100%;
     padding: 1rem;
     font-weight: bold;
     cursor: pointer;
     outline: none;
     color: var(--secondary-color);
     font-size: 1.1rem;
+    border: none;
+    background: none;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
 }
-.performance-details[open] summary {
-    border-bottom: 1px solid var(--border-color);
+
+.accordion .accordion-header:hover {
+    background-color: var(--background-light);
 }
-.performance-details ul {
-    padding: 1rem 1rem 1rem 3rem;
-    margin: 0;
+
+.accordion .accordion-header::after {
+    content: '\f078'; /* Font Awesome down arrow */
+    font-family: 'FontAwesome';
+    transition: transform 0.3s ease;
+}
+
+.accordion .accordion-header.active::after {
+    transform: rotate(180deg); /* Rotate arrow when active */
+}
+
+.accordion .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.accordion .accordion-content .content-inner {
+    padding: 1rem 1.5rem;
 }
 
 /* Client Grid */
@@ -576,6 +634,13 @@ body {
     border-radius: var(--border-radius);
     font-weight: 500;
     color: #555;
+    transition: all 0.3s ease;
+}
+
+.client-logo-text:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-light);
+    color: var(--primary-color);
 }
 
 /* Styles for Admin In-Page Editor */

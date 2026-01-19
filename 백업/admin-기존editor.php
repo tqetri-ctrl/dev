@@ -2,7 +2,6 @@
 define('G5_IS_ADMIN', true);
 include_once('./common.php');
 include_once(G5_ADMIN_PATH . '/admin.lib.php');
-require_once(G5_EDITOR_LIB);
 
 // 관리자가 아니면 로그인 페이지로 리디렉션합니다.
 // 로그인 후 현재 페이지로 돌아오도록 URL을 전달합니다.
@@ -378,7 +377,6 @@ if (isset($_GET['p'])) {
             <?php endif; ?>
             <?php if ($editing_page_file): ?>
                 <h2>페이지 수정: <?php echo $editing_page_file; ?></h2>
-                <form name="fpageform" id="fpageform" method="post" onsubmit="return fpageform_submit(this);">
                 <div class="editor-toggle">
                     <button type="button" id="btn-wysiwyg">WYSIWYG</button>
                     <button type="button" id="btn-html">HTML</button>
@@ -386,7 +384,6 @@ if (isset($_GET['p'])) {
                 <form method="post">
                     <input type="hidden" name="token" value="<?php echo $token; ?>">
                     <input type="hidden" name="page_file" value="<?php echo htmlspecialchars($editing_page_file); ?>">
-                    <?php echo editor_html('page_content', $editing_page_content); ?>
                     <textarea name="page_content" id="editor"></textarea>
                     <p style="margin-top: 1rem;">
                         <button type="submit">페이지 저장</button>
@@ -414,197 +411,166 @@ if (isset($_GET['p'])) {
     </div>
     <?php if ($editing_page_file): ?>
     <script>
-    function fpageform_submit(f) {
-        <?php echo get_editor_js('page_content'); ?>
+        let ckEditorInstance = null;
+        const editorTextarea = document.querySelector('#editor');
+        const btnWysiwyg = document.querySelector('#btn-wysiwyg');
+        const btnHtml = document.querySelector('#btn-html');
+        const previewBtn = document.getElementById('preview-btn');
 
-        const content = f.page_content.value;
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = content;
-        const hasContent = tempDiv.textContent.trim().length > 0 || tempDiv.querySelector('img, video, iframe, table, hr');
-
-        if (!hasContent && !confirm("내용이 비어있습니다. 빈 페이지를 저장하시겠습니까?")) {
-            return false;
+        // HTML 코드를 보기 좋게 포맷하는 함수
+        function formatHtml(html) {
+            if (typeof html_beautify === 'function') {
+                return html_beautify(html, {
+                    indent_size: 4,
+                    end_with_newline: true,
+                    preserve_newlines: true,
+                    max_preserve_newlines: 1,
+                    wrap_line_length: 0,
+                    unformatted: ['a', 'span', 'b', 'i', 'strong', 'em', 'code']
+                });
+            }
+            return html;
         }
 
-        return true;
-    }
+        function switchToWysiwyg() {
+            if (ckEditorInstance) return;
+            const currentHtml = editorTextarea.value;
+            
+            CKEDITOR.ClassicEditor
+                .create(editorTextarea, {
+                    // 근본 원인 해결: CKEditor 'Super-build'는 모든 플러그인이 포함된 버전이므로,
+                    // 사용할 플러그인을 하나씩 추가하는 'plugins'(화이트리스트) 방식 대신,
+                    // 불필요한 기능만 제거하는 'removePlugins'(블랙리스트) 방식을 사용해야 합니다.
+                    // 이는 CKEditor가 내부 의존성을 스스로 관리하게 하여 안정성을 확보하는 가장 확실한 방법입니다.
+                    removePlugins: [
+                        // --- 1. 협업(Collaboration) 기능 전체 제거 ---
+                        // 별도의 서버 설정과 유료 라이선스가 필요하며, 설정 없이는 연쇄적인 오류를 발생시킵니다.
+                        'RealTimeCollaborativeComments',
+                        'RealTimeCollaborativeTrackChanges',
+                        'RealTimeCollaborativeRevisionHistory',
+                        'RealTimeCollaborativeEditing',
+                        'Comments',
+                        'TrackChanges',
+                        'TrackChangesData',
+                        'RevisionHistory',
+                        'PresenceList',
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const previewBtn = document.getElementById('preview-btn');
+                        // --- 2. 유료 또는 외부 서비스 연동 기능 제거 ---
+                        'WProofreader',
+                        'AIAssistant',
+                        'MathType',
+                        'CKFinder',
+                        'EasyImage',
+                        'CKBox',
+                        'CloudServices',
+
+                        // --- 3. 현재 사용하지 않는 복잡한 기능 제거 ---
+                        'ExportPdf',
+                        'ExportWord',
+                        'ImportFromWord',
+                        'Pagination',
+                        'SlashCommand',
+                        'Template',
+                        'DocumentOutline',
+                        'FormatPainter',
+                        'TableOfContents',
+                        'Title',
+                        'MediaEmbed'
+                    ],
+                    toolbar: {
+                        items: [
+                            'sourceEditing', '|', 
+                            'heading', '|',
+                            'bold', 'italic', 'underline', 'strikethrough', 'code', '|',
+                            'link', 'removeFormat', 'blockQuote', '|',
+                            'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                            'bulletedList', 'numberedList', 'todoList', '|',
+                            'outdent', 'indent', 'alignment', '|',
+                            'uploadImage', 'insertTable', 'htmlEmbed', 'horizontalLine', 'codeBlock', '|',
+                            'undo', 'redo'
+                        ],
+                        shouldNotGroupWhenFull: true
+                    },
+                    language: 'ko',
+                    htmlSupport: {
+                        allow: [
+                            {
+                                name: /.*/,
+                                attributes: true,
+                                classes: true,
+                                styles: true
+                            }
+                        ]
+                    },
+                    image: {
+                        // 'imageStyle:full'은 기본 제공 스타일이 아니므로, 정의되지 않은 스타일을 참조하면 에디터 로딩 오류가 발생합니다.
+                        // CKEditor가 기본 제공하는 안전하고 유용한 설정으로 교체하여 문제를 해결합니다.
+                        toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative', '|', 'linkImage' ],
+                    },
+                    // 서버에 이미지를 업로드하기 위한 SimpleUpload 어댑터 설정
+                    simpleUpload: {
+                        uploadUrl: 'upload.php'
+                    },
+                })
+                .then(editor => {
+                    ckEditorInstance = editor;
+                    editor.setData(currentHtml);
+                    
+                    btnWysiwyg.classList.add('active');
+                    btnHtml.classList.remove('active');
+                    localStorage.setItem('editorMode', 'wysiwyg');
+                })
+                .catch(error => {
+                    console.error('CKEditor 로드 중 심각한 오류가 발생했습니다. 전체 오류 객체:', error);
+                    alert('에디터 로드에 실패했습니다. F12 개발자 도구의 콘솔(Console) 탭에서 상세 오류를 확인해주세요.');
+                    // 폴백: HTML 모드로 자동 전환
+                    editorTextarea.style.display = 'block';
+                    btnHtml.classList.add('active');
+                    btnWysiwyg.classList.remove('active');
+                });
+        }
+
+        function switchToHtml() {
+            if (!ckEditorInstance) return;
+            const rawHtml = ckEditorInstance.getData();
+            editorTextarea.value = formatHtml(rawHtml);
+            
+            ckEditorInstance.destroy().then(() => {
+                ckEditorInstance = null;
+                btnHtml.classList.add('active');
+                btnWysiwyg.classList.remove('active');
+                localStorage.setItem('editorMode', 'html');
+            });
+        }
+
+        btnWysiwyg.addEventListener('click', switchToWysiwyg);
+        btnHtml.addEventListener('click', switchToHtml);
+
+        // 미리보기 버튼
         if (previewBtn) {
             previewBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                let content = '';
-                if (window.page_content_editor) {
-                    content = window.page_content_editor.getData();
+                let content;
+                if (ckEditorInstance) {
+                    content = ckEditorInstance.getData();
                 } else {
-                    const editorTextarea = document.getElementById('page_content');
-                    if (editorTextarea) {
-                        content = editorTextarea.value;
-                    }
+                    content = editorTextarea.value;
                 }
-
                 sessionStorage.setItem('page_preview_content', content);
                 const previewUrl = this.dataset.previewUrl + (this.dataset.previewUrl.includes('?') ? '&' : '?') + 'preview=true';
                 window.open(previewUrl, '_blank');
             });
         }
-    });
-    </script>
-    <?php else: // 내비게이션 편집 화면일 때 ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const availablePages = <?php echo json_encode($available_pages); ?>;
-            // 1. 초기 데이터 (서버에서 가져온 JSON)
-            let navigationData = <?php echo $nav_content; ?>;
-            
-            // 데이터 유효성 검증
-            if (!Array.isArray(navigationData)) {
-                console.warn('내비게이션 데이터가 배열이 아닙니다. 초기화합니다.');
-                navigationData = [];
+
+        // 폼 제출
+        editorTextarea.form.addEventListener('submit', (e) => {
+            let finalHtml;
+            if (ckEditorInstance) {
+                finalHtml = ckEditorInstance.getData();
+            } else {
+                finalHtml = editorTextarea.value;
             }
 
-            const listElement = document.getElementById('main-menu-list');
-            if (!listElement) {
-                console.error('main-menu-list 요소를 찾을 수 없습니다.');
-                return;
-            }
-
-            // 2. 화면에 트리 구조 그리기 함수
-            function renderNav() {
-                const pageOptions = '<option value="">-- 페이지 선택 --</option>' + availablePages.map(p => `<option value="${p.url}">${p.title}</option>`).join('');
-    
-                listElement.innerHTML = '';
-                navigationData.forEach((menu, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'menu-item-container';
-                    li.dataset.index = index;
-    
-                    const menuItemDiv = document.createElement('div');
-                    menuItemDiv.className = 'menu-item';
-                    menuItemDiv.innerHTML = `
-                        <div class="menu-info">
-                            <span class="drag-handle" title="드래그하여 순서 변경">☰</span>
-                            <input type="text" value="${menu.title}" onchange="updateData(${index}, 'title', this.value)">
-                            <input type="text" id="url-main-${index}" value="${menu.url}" onchange="updateData(${index}, 'url', this.value)" style="width:250px; color:#888;">
-                            <select onchange="document.getElementById('url-main-${index}').value = this.value; updateData(${index}, 'url', this.value); this.selectedIndex = 0;">${pageOptions}</select>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" onclick="addSubMenu(${index})" class="btn-add">하위 추가</button>
-                            <button type="button" onclick="deleteMenu(${index})" class="btn-del">삭제</button>
-                        </div>
-                    `;
-                    li.appendChild(menuItemDiv);
-    
-                    const subUl = document.createElement('ul');
-                    subUl.className = 'submenu-list';
-                    subUl.dataset.parentIndex = index;
-    
-                    // 하위 메뉴가 있다면
-                    if (menu.submenu && menu.submenu.length > 0) {
-                        menu.submenu.forEach((sub, subIndex) => {
-                            const subLi = document.createElement('li');
-                            subLi.className = 'menu-item submenu';
-                            subLi.dataset.index = subIndex;
-                            subLi.innerHTML = `
-                                <div class="menu-info">
-                                    <span class="drag-handle" title="드래그하여 순서 변경">☰</span>
-                                    <span style="margin-left: 10px;">ㄴ</span>
-                                    <input type="text" value="${sub.title}" onchange="updateSubData(${index}, ${subIndex}, 'title', this.value)">
-                                    <input type="text" id="url-sub-${index}-${subIndex}" value="${sub.url}" onchange="updateSubData(${index}, ${subIndex}, 'url', this.value)" style="width:200px; color:#888;">
-                                    <select onchange="document.getElementById('url-sub-${index}-${subIndex}').value = this.value; updateSubData(${index}, ${subIndex}, 'url', this.value); this.selectedIndex = 0;">${pageOptions}</select>
-                                </div>
-                                <button type="button" onclick="deleteSubMenu(${index}, ${subIndex})" class="btn-del">삭제</button>
-                            `;
-                            subUl.appendChild(subLi);
-                        });
-                    }
-                    li.appendChild(subUl);
-                    listElement.appendChild(li);
-                });
-                initSortable();
-            }
-
-            function initSortable() {
-                // Main menu sorting
-                new Sortable(listElement, {
-                    handle: '.drag-handle',
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    onEnd: function (evt) {
-                        const item = navigationData.splice(evt.oldIndex, 1)[0];
-                        navigationData.splice(evt.newIndex, 0, item);
-                        renderNav(); // Re-render to update indices and event handlers
-                    },
-                });
-    
-                // Submenu sorting
-                document.querySelectorAll('.submenu-list').forEach(sublist => {
-                    new Sortable(sublist, {
-                        group: 'submenus', // Allow moving items between sublists
-                        handle: '.drag-handle',
-                        animation: 150,
-                        ghostClass: 'sortable-ghost',
-                        onEnd: function (evt) {
-                            const fromParentIndex = parseInt(evt.from.dataset.parentIndex);
-                            const toParentIndex = parseInt(evt.to.dataset.parentIndex);
-    
-                            // Remove item from old position
-                            const item = navigationData[fromParentIndex].submenu.splice(evt.oldIndex, 1)[0];
-    
-                            // Add item to new position
-                            if (!navigationData[toParentIndex].submenu) {
-                                navigationData[toParentIndex].submenu = [];
-                            }
-                            navigationData[toParentIndex].submenu.splice(evt.newIndex, 0, item);
-                            
-                            renderNav(); // Re-render to update indices and event handlers
-                        },
-                    });
-                });
-            }
-
-            // 데이터 수정/추가/삭제 함수들
-            window.updateData = (index, key, value) => { navigationData[index][key] = value; console.log(navigationData); };
-            window.updateSubData = (index, subIndex, key, value) => { navigationData[index].submenu[subIndex][key] = value; console.log(navigationData); };
-            window.addNewMainMenu = () => {
-                navigationData.push({ title: "새 메뉴", url: "#", submenu: [] });
-                renderNav();
-            };
-            window.addSubMenu = (index) => {
-                if (!navigationData[index].submenu) {
-                    navigationData[index].submenu = [];
-                }
-                navigationData[index].submenu.push({ title: "새 하위 메뉴", url: "#" });
-                renderNav();
-            };
-            window.deleteMenu = (index) => {
-                if (confirm('정말로 이 상위 메뉴와 모든 하위 메뉴를 삭제하시겠습니까?')) {
-                    navigationData.splice(index, 1);
-                    renderNav();
-                }
-            };
-            window.deleteSubMenu = (index, subIndex) => {
-                if (confirm('정말로 이 하위 메뉴를 삭제하시겠습니까?')) {
-                    navigationData[index].submenu.splice(subIndex, 1);
-                    renderNav();
-                }
-            };
-
-            // 3. 폼 제출 시, 최신 데이터를 hidden input에 담기
-            document.getElementById('nav-form').addEventListener('submit', function(e) {
-                document.getElementById('nav-content-input').value = JSON.stringify(navigationData, null, 2);
-            });
-
-            // 최초 로드
-            renderNav();
-        });
-    </script>
-    <?php endif; ?>
-</body>
-</html>
-            
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = finalHtml;
             const hasContent = tempDiv.textContent.trim().length > 0 || tempDiv.querySelector('img, video, iframe, table, hr');
